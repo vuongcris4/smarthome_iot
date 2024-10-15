@@ -21,14 +21,10 @@ const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 
 function generateFakeData() {
-  // Generate data for bedroom
   generateRoomData('bedroom');
-  // Generate data for livingroom
   generateRoomData('livingroom');
-  // Generate data for kitchen
   generateRoomData('kitchen');
-  // Generate data for bathroom
-  generateRoomData('bathroom');
+  generateRoomData('gameroom');
 }
 
 function generateRoomData(room) {
@@ -45,5 +41,4 @@ function generateRoomData(room) {
   set(ref(database, `${room}/sensors/presence`), { value: presence });
 }
 
-// Chạy hàm generateFakeData mỗi 5 giây để cập nhật dữ liệu giả cho cả 4 phòng
 setInterval(generateFakeData, 5000);

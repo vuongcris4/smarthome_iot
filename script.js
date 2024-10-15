@@ -1,4 +1,3 @@
-// Import các chức năng cần thiết từ Firebase SDK
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
 import {
   getDatabase,
@@ -128,7 +127,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const acImage = document.getElementById("acImage");
   const lightDeviceImage = document.getElementById("lightDeviceImage");
 
-  // ADD EVENT LISTENER 1 lần duy nhất, nếu để trong hàm housr_room -> lỗi
+  // ADD EVENT LISTENER 1 lần duy nhất, nếu để trong hàm house_room -> lỗi
   // SET Công tắc điều hòa
   acSwitch.addEventListener("change", () => {
     const isChecked = acSwitch.checked;
@@ -154,52 +153,48 @@ document.addEventListener("DOMContentLoaded", function () {
     fanImage.src = isChecked ? "/images/fan_on.png" : "/images/fan_off.png";
     fanImage.classList.toggle("spin", isChecked); // Quạt quay hoặc dừng
 
-    // Cập nhật trạng thái quạt lên Firebase
     updateDeviceStatus(room, "fan", isChecked);
   });
 
   const menuItems = document.querySelectorAll("nav ul li");
   menuItems.forEach(function (item) {
     item.addEventListener("click", function () {
+      // Sự kiện khi click vào 1 trong 4 room
       menuItems.forEach(function (menuItem) {
         menuItem.classList.remove("selected"); // xoa class selected
       });
 
       this.setAttribute("class", "selected"); // them class = selected
       const room = this.id; // id phòng
-      document.querySelector("h1").textContent = `SmartHome - ${room.charAt(0).toUpperCase() + room.slice(1)}`;
+      document.querySelector("h1").textContent = `SmartHome - ${
+        room.charAt(0).toUpperCase() + room.slice(1)
+      }`; // In hoa chữ cái đầu tiên
       house_room(room); // chạy các sự kiện trong phòng đó
 
-      // Xóa query string khỏi URL khi chuyển phòng
-      history.replaceState(null, "", window.location.pathname);
-      if (room === "bedroom") {
-      }
+      history.replaceState(null, "", window.location.pathname); // Xóa ?room=
     });
   });
 
-  // Lấy giá trị từ query string (URL)
   const params = new URLSearchParams(window.location.search);
-  const room = params.get("room"); // Lấy giá trị room từ URL, ví dụ 'livingroom'
+  const room = params.get("room"); // ?room=livingroom
 
-  // Nếu có giá trị "room" trong URL, giả lập click vào phòng tương ứng
+  // Từ home.html -> index.html, lấy ?room=, rồi click vào phòng đó
   if (room) {
     const selectedRoom = document.getElementById(room);
     selectedRoom.click(); // Giả lập click vào mục tương ứng
   } else {
-    const defaultRoom = document.getElementById("bedroom");
-    defaultRoom.click();
+    document.getElementById("bedroom").click(); // load trang lần đầu tự chọn bedroom
   }
 
-  // Hàm cập nhật ngày giờ
   function updateDateTime() {
     const now = new Date();
-    const date = now.toLocaleDateString();
+    const date = now.toLocaleDateString("en-GB"); // 'en-GB' dùng để định dạng ngày kiểu Anh (dd/mm/yyyy)
     const time = now.toLocaleTimeString();
 
     document.getElementById("date").textContent = `Date: ${date}`;
     document.getElementById("time").textContent = `Time: ${time}`;
   }
 
-  // Cập nhật mỗi giây
+  // Cập nhật ngày giờ mỗi giây
   setInterval(updateDateTime, 1000);
 });
